@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>VxTel - A mais BRABA!</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+
+    <style>
+        .teste {
+            display: block;
+            width: 100%;
+            padding: .375rem 1.75rem .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            vertical-align: middle;
+            background-color: #fff;
+            background-size: 16px 12px;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none
+        }
+
+        body {
+            background-image: url('./img/bgimg.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: cornsilk;
+        }
+
+        .bg-w {
+            background-color: cornflowerblue;
+        }
+
+        .color {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-w ">
+        <a class="navbar-brand" href="#">
+            <img src="./img/navbrand.png" width="50" height="50">
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ">
+                <li class="nav-item active ">
+                    <a class="nav-link" style="color: cornsilk; font-weight: bold;" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " style="color: cornsilk; font-weight: bold;" href="#">Sobre</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nitem" style="color: cornsilk; font-weight: bold;" href="planos.html">Planos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nitem" style="color: cornsilk; font-weight: bold;" href="#">Contato</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <h4 class="d-flex justify-content-center"> Calculo de Custo </h4>
+    <p class="d-flex justify-content-center"> Essa calculadora serve para te mostrar as vantagens dos planos FaleMais!
+    </p>
+
+    <select id="firstForm" class="form-select" aria-label="Default select example"
+        style="width: 20%; display: inline; margin-left: 16%;" onchange="validarSelect()">
+        <option value="0" disabled selected>Escolha a origem:</option>
+        <option value="ddd11">011 - São Paulo e região</option>
+        <option value="ddd16">016 - Ribeirão Preto e região</option>
+        <option value="ddd17">017 - S. José do Rio Preto e região</option>
+        <option value="ddd18">018 - Presidente Prudente e região</option>
+    </select>
+    <select id="segundoSelect" class="form-select" aria-label="Default select example"
+        style="width: 20%; display: inline;" onchange="validaSelect()" disabled>
+        <option value="0" selected>Escolha o destino:</option>
+    </select>
+    <input type="text" id="tempo" placeholder="Digite o tempo em minutos" class="form-control teste"
+        style="width: 20%; display: inline;" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalPlanos"
+        onclick="calculoPlanos()">
+        Calcular!
+    </button>
+    <div class="modal fade color" id="modalPlanos" tabindex="-1" aria-labelledby="modalLabelPlanos" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelPlanos">Valores</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table id="tableInside">
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary"
+                        onclick="alert('Cara, é tão caro que até a Oi vale mais a pena')">Contratar plano</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+
+
+
+    <script>
+        const validaSelect = () => {
+            document.getElementById("tempo").disabled = false
+        }
+        const validarSelect = () => {
+            const ddd11Value = `<option value="0" disabled selected>Escolha o destino:</option><option value="ddd16">016 - Ribeirão Preto e região</option><option value="ddd17">017 - S. José do Rio Preto e região</option><option value="ddd18">018 - Presidente Prudente e região</option>`
+            const otherDdds = `<option value="0" selected>Escolha o destino:</option><option value="ddd11">011 - São Paulo e região</option>`
+            document.getElementById("segundoSelect").disabled = false;
+            document.getElementById("firstForm").value == 'ddd11' ? document.getElementById("segundoSelect").innerHTML = ddd11Value : document.getElementById("segundoSelect").innerHTML = otherDdds
+        }
+        const calculoPlanos = () => {
+            const data = {
+                origem: document.getElementById("firstForm").value,
+                destino: document.getElementById("segundoSelect").value,
+                tempo: document.getElementById("tempo").value
+            }
+            fetch('<url>/planCalc', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then((valor) => {
+                var dataResult = JSON.parse(valor.text())
+
+                console.log(b)
+                document.getElementById("tableInside").innerHTML = `<table class="table table-bordered"><thead><tr><th class="col pt-3 border px-md-3">Origem</th><th class="col pt-3 border px-md-3">Destino</th><th class="col pt-3 border px-md-3">Tempo</th><th class="col pt-3 border px-md-3">Plano FaleMais</th><th class="col pt-3 border px-md-3">Com FaleMais</th><th class="col pt-3 border px-md-3">Sem FaleMais</th></tr></thead><tbody><tr><td class="col pt-3 border px-md-3">${data.origem.toUpperCase()}</td><td class="col pt-3 border px-md-3">${data.destino.toUpperCase()}</td><td class="col pt-3 border px-md-3">${data.tempo}min</td><td class="col pt-3 border px-md-3">FaleMais 30</td><td class="col pt-3 border px-md-3">R$${dataResult.faleMais30.toFixed(2)}</td><td class="col pt-3 border px-md-3">R$${dataResult.semPlano.toFixed(2)}</td></tr><tr><td class="col pt-3 border px-md-3">${data.origem.toUpperCase()}</td><td class="col pt-3 border px-md-3">${data.destino.toUpperCase()}</td><td class="col pt-3 border px-md-3">${data.tempo}min</td><td class="col pt-3 border px-md-3">FaleMais 60</td><td class="col pt-3 border px-md-3">R$${dataResult.faleMais60.toFixed(2)}</td><td class="col pt-3 border px-md-3">R$${dataResult.semPlano.toFixed(2)}</td></tr><tr><td class="col pt-3 border px-md-3">${data.origem.toUpperCase()}</td><td class="col pt-3 border px-md-3">${data.destino.toUpperCase()}</td><td class="col pt-3 border px-md-3">${data.tempo}min</td><td class="col pt-3 border px-md-3">FaleMais 120</td><td class="col pt-3 border px-md-3">R$${dataResult.faleMais120.toFixed(2)}</td><td class="col pt-3 border px-md-3">R$${dataResult.semPlano.toFixed(2)}</td></tr></tbody></table>`
+            })
+        }
+    </script>
+
+
+</body>
+
+</html>
